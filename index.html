@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Test de CI orientativo en 5 secciones. Haz el test y compara tu resultado con tus amigos.">
+<title>Test de CI orientativo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f3ee; --card:#fffdf9; --ink:#1d1b19; --muted:#6b655d; --line:#e2dcd2;
+  --accent:#2f5d50; --accent-soft:#e3ece8; --warn:#9a4a20; --good:#2f6d3a; --bad:#a23a2a;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#171614;--card:#201f1c;--ink:#ece7df;--muted:#a39b90;--line:#36332e;--accent:#7fbfa8;--accent-soft:#25332e;--warn:#e0a07a;--good:#86c48f;--bad:#e58b7c;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 60px}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.2;margin:0 0 .5em}
+h1{font-size:2rem} h2{font-size:1.45rem} h3{font-size:1.1rem}
+p{margin:.4em 0 .9em}
+.muted{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;margin:16px 0}
+.btn{appearance:none;border:0;background:var(--accent);color:var(--card);font:600 15px Inter,sans-serif;padding:12px 20px;border-radius:10px;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.btn:disabled{opacity:.4;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.progress{height:6px;background:var(--line);border-radius:4px;overflow:hidden;margin:4px 0 6px}
+.progress>div{height:100%;background:var(--accent);transition:width .3s}
+.top{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.sections{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:14px 0}
+.sec{border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14px}
+.sec b{display:block;font-size:15px;margin-bottom:2px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--ink);width:min(330px,100%);margin:10px auto 18px}
+.grid3>div{aspect-ratio:1;border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.grid3 .q{font:700 2rem Fraunces,serif;color:var(--accent);background:var(--accent-soft)}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.opts.txt{grid-template-columns:1fr 1fr}
+.opt{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font:500 15px Inter,sans-serif;color:var(--ink);min-height:54px;text-align:left}
+.opt:hover{border-color:var(--accent)}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt .k{font-size:12px;color:var(--muted);font-weight:600}
+.series{font:600 1.6rem Fraunces,serif;letter-spacing:.04em;text-align:center;margin:12px 0 20px}
+.digit{font:700 4rem Fraunces,serif;text-align:center;min-height:5rem;margin:20px 0}
+input.ans{font:600 1.4rem Inter,sans-serif;padding:10px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);width:220px;letter-spacing:.2em;text-align:center}
+.sym{display:flex;justify-content:center;gap:28px;font-size:2.4rem;margin:20px 0;letter-spacing:.15em}
+.timer{font:600 1.1rem Inter;color:var(--warn)}
+.bars .b{margin:10px 0}
+.bars .lab{display:flex;justify-content:space-between;font-size:14px}
+.bars .t{height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.bars .t>div{height:100%;background:var(--accent)}
+.big{font:700 3.4rem Fraunces,serif;color:var(--accent);line-height:1}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td,th{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left}
+tr.me td{background:var(--accent-soft);font-weight:600}
+.note{border-left:3px solid var(--warn);padding:8px 14px;background:color-mix(in srgb,var(--warn) 8%,transparent);border-radius:0 8px 8px 0;font-size:14px}
+.review{font-size:14px}
+.review li{margin:4px 0}
+.ok{color:var(--good)} .ko{color:var(--bad)}
+kbd{border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:12px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="stripes" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="6" height="6" fill="none"/>
+      <line x1="0" y1="0" x2="0" y2="6" stroke="currentColor" stroke-width="2.4"/>
+    </pattern>
+  </defs>
+</svg>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ===================== Utilidades ===================== */
+const $app = document.getElementById('app');
+function rng(seed){ return function(){ seed = (seed*1664525 + 1013904223) % 4294967296; return seed/4294967296; }; }
+function shuffle(arr, seed){ const r=rng(seed); const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ===================== Matrices (razonamiento abstracto) ===================== */
+const SHAPES=['circle','square','triangle'];
+const FILLS=['empty','solid','stripe'];
+function shapeSVG(shape,x,y,s,fill,rot){
+  const f = fill==='solid'?'currentColor':fill==='stripe'?'url(#stripes)':'none';
+  const st = `stroke="currentColor" stroke-width="2" fill="${f}"`;
+  let el='';
+  if(shape==='circle') el=`<circle cx="${x}" cy="${y}" r="${s}" ${st}/>`;
+  else if(shape==='square') el=`<rect x="${x-s*.88}" y="${y-s*.88}" width="${s*1.76}" height="${s*1.76}" ${st}/>`;
+  else if(shape==='triangle') el=`<polygon points="${x},${y-s} ${x+s*.95},${y+s*.75} ${x-s*.95},${y+s*.75}" ${st}/>`;
+  else if(shape==='hex'){ let p=[];for(let i=0;i<6;i++){const a=Math.PI/3*i;p.push((x+s*Math.cos(a)).toFixed(1)+','+(y+s*Math.sin(a)).toFixed(1));} el=`<polygon points="${p.join(' ')}" ${st}/>`; }
+  else if(shape==='arrow') el=`<polygon points="${x},${y-s} ${x+s*.8},${y-s*.1} ${x+s*.3},${y-s*.1} ${x+s*.3},${y+s} ${x-s*.3},${y+s} ${x-s*.3},${y-s*.1} ${x-s*.8},${y-s*.1}" ${st} transform="rotate(${rot||0} ${x} ${y})"/>`;
+  return el;
+}
+function cellSVG(c, size=80){
+  if(!c) return '';
+  const n=c.count||1; const s= n===1?20:n===2?14:12;
+  const pos = n===1?[[40,40]]: n===2?[[24,40],[56,40]] : [[40,22],[22,56],[58,56]];
+  return `<svg viewBox="0 0 80 80" width="${size}" height="${size}" style="color:var(--ink)">${pos.map(p=>shapeSVG(c.shape,p[0],p[1],s,c.fill,c.rot)).join('')}</svg>`;
+}
+const key = c => [c.shape,c.count,c.fill,c.rot||0].join('|');
+function buildMatrixItem(m, idx){
+  const grid=[]; for(let r=0;r<3;r++)for(let c=0;c<3;c++) grid.push(m.f(r,c));
+  const ans=grid[8];
+  const cands=[];
+  const allShapes = ans.shape==='arrow'?['arrow']:['circle','square','triangle','hex'];
+  allShapes.forEach(s=>cands.push({...ans,shape:s}));
+  [1,2,3].forEach(n=>cands.push({...ans,count:n}));
+  FILLS.forEach(f=>cands.push({...ans,fill:f}));
+  if(ans.shape==='arrow') [0,45,90,135,180,225,270,315].forEach(r=>cands.push({...ans,rot:r}));
+  grid.slice(0,8).forEach(g=>cands.push(g));
+  const seen=new Set([key(ans)]); const dis=[];
+  shuffle(cands, 97+idx*13).forEach(c=>{ if(!seen.has(key(c)) && dis.length<5){seen.add(key(c));dis.push(c);} });
+  const opts=shuffle([ans,...dis], 501+idx*7);
+  return {type:'matrix', grid, opts, correct:opts.findIndex(o=>key(o)===key(ans)), label:`Matriz ${idx+1}`};
+}
+
+/* ===================== Series numéricas ===================== */
+/* ===================== Razonamiento verbal ===================== */
+/* ===================== Memoria de trabajo (dígitos inversos) ===================== */
+
+const FORMS = {
+  A:{
+    MATRICES:[
+  {d:1, f:(r,c)=>({shape:SHAPES[c],count:1,fill:FILLS[r]})},
+  {d:1, f:(r,c)=>({shape:SHAPES[r],count:c+1,fill:'empty'})},
+  {d:2, f:(r,c)=>({shape:'arrow',count:1,fill:'solid',rot:(r*90+c*45)%360})},
+  {d:2, f:(r,c)=>({shape:SHAPES[(r+c)%3],count:1,fill:FILLS[(r+2*c)%3]})},
+  {d:3, f:(r,c)=>{const t=[[1,1,2],[1,2,3],[2,1,3]];return {shape:['circle','hex','square'][r],count:t[r][c],fill:'solid'};}},
+  {d:3, f:(r,c)=>({shape:SHAPES[(r+c)%3],count:((2*r+c)%3)+1,fill:FILLS[c]})},
+  {d:4, f:(r,c)=>({shape:'arrow',count:c+1,fill:FILLS[(r+c)%3],rot:[0,90,225][(2*r+c)%3]})},
+  {d:4, f:(r,c)=>({shape:SHAPES[(r+c)%3],count:((2*r+c)%3)+1,fill:FILLS[(r+2*c)%3]})},
+],
+    NUM:[
+  {q:'1, 4, 9, 16, 25, ?', o:['30','34','36','49'], a:2, why:'Cuadrados: 1², 2², 3²… → 6² = 36'},
+  {q:'81, 27, 9, 3, ?', o:['0','1','1,5','2'], a:1, why:'Se divide entre 3 cada vez'},
+  {q:'2, 6, 12, 20, 30, ?', o:['36','40','42','44'], a:2, why:'Diferencias +4, +6, +8, +10, +12'},
+  {q:'4, 9, 7, 12, 10, ?', o:['8','13','15','17'], a:2, why:'Alterna +5 y −2'},
+  {q:'3, 7, 15, 31, 63, ?', o:['94','125','126','127'], a:3, why:'Cada término ×2 + 1'},
+  {q:'5, 10, 8, 16, 14, ?', o:['12','18','28','30'], a:2, why:'Alterna ×2 y −2'},
+  {q:'1, 2, 6, 24, 120, ?', o:['240','600','720','840'], a:2, why:'×2, ×3, ×4, ×5, ×6 (factoriales)'},
+  {q:'Si 3 grifos llenan un depósito en 12 horas, ¿cuánto tardan 4 grifos iguales?', o:['8 h','9 h','10 h','16 h'], a:1, why:'Proporción inversa: 3·12 = 36 grifo-horas; 36/4 = 9', text:true},
+],
+    VERB:[
+  {q:'LIBRO es a LEER como CUCHILLO es a…', o:['afilar','cortar','cocina','metal'], a:1, why:'Relación objeto → función'},
+  {q:'¿Qué palabra no encaja?', o:['manzana','pera','zanahoria','plátano'], a:2, why:'La zanahoria es una hortaliza; el resto son frutas'},
+  {q:'OSCURIDAD es a LUZ como SILENCIO es a…', o:['ruido','sonido','oído','calma'], a:1, why:'Ausencia → aquello que falta'},
+  {q:'Si María es más alta que Ana, y Ana es más alta que Luis, ¿quién es el más bajo?', o:['María','Ana','Luis','No se puede saber'], a:2, why:'Ordenando: María > Ana > Luis'},
+  {q:'Sinónimo de EFÍMERO:', o:['eterno','pasajero','etéreo','frágil'], a:1, why:'Efímero = que dura poco'},
+  {q:'¿Qué figura no encaja?', o:['triángulo','cuadrado','cubo','pentágono'], a:2, why:'El cubo es tridimensional; los demás son figuras planas'},
+  {q:'Todos los A son B. Algunos B son C. Por tanto…', o:['Algunos A son C','Ningún A es C','Todos los C son A','No se puede concluir nada sobre A y C'], a:3, why:'Los B que son C podrían no incluir a ningún A'},
+  {q:'Antónimo de PROLIJO:', o:['ordenado','conciso','extenso','cuidadoso'], a:1, why:'Prolijo = largo, extenso en exceso; lo contrario es conciso'},
+],
+    DIG:[[7,2,9],[4,1,8,3],[6,9,2,5,1],[3,8,1,7,4,6],[9,2,6,4,8,1,5],[5,1,7,3,9,2,8,4]]
+  },
+  B:{
+    MATRICES:[
+  {d:1, f:(r,c)=>({shape:['hex','circle','square'][r],count:1,fill:FILLS[c]})},
+  {d:1, f:(r,c)=>({shape:['square','triangle','hex'][c],count:3-r,fill:'solid'})},
+  {d:2, f:(r,c)=>({shape:'arrow',count:1,fill:FILLS[r],rot:(r*45+c*90)%360})},
+  {d:2, f:(r,c)=>({shape:['hex','triangle','circle'][(r+2*c)%3],count:((r+c)%3)+1,fill:'stripe'})},
+  {d:3, f:(r,c)=>{const t=[[3,1,2],[3,2,1],[2,1,1]];return {shape:['square','circle','triangle'][r],count:t[r][c],fill:'empty'};}},
+  {d:3, f:(r,c)=>({shape:'arrow',count:1,fill:FILLS[(2*r+c)%3],rot:[45,180,270][(r+2*c)%3]})},
+  {d:4, f:(r,c)=>({shape:['circle','hex','triangle'][(2*r+c)%3],count:r+1,fill:FILLS[(r+c)%3]})},
+  {d:4, f:(r,c)=>({shape:'arrow',count:((r+2*c)%3)+1,fill:FILLS[(2*r+c)%3],rot:[0,135,270][(r+c)%3]})},
+],
+    NUM:[
+  {q:'1, 3, 6, 10, 15, ?', o:['18','20','21','25'], a:2, why:'Diferencias +2, +3, +4, +5, +6'},
+  {q:'100, 93, 86, 79, ?', o:['70','72','73','75'], a:1, why:'Se resta 7 cada vez'},
+  {q:'1, 8, 27, 64, ?', o:['100','121','125','128'], a:2, why:'Cubos: 1³, 2³, 3³, 4³ → 5³ = 125'},
+  {q:'7, 10, 9, 12, 11, ?', o:['10','13','14','15'], a:2, why:'Alterna +3 y −1'},
+  {q:'2, 3, 5, 7, 11, 13, ?', o:['15','16','17','19'], a:2, why:'Números primos'},
+  {q:'1, 2, 4, 7, 11, 16, ?', o:['20','21','22','24'], a:2, why:'Diferencias +1, +2, +3, +4, +5, +6'},
+  {q:'2, 5, 11, 23, 47, ?', o:['84','94','95','96'], a:2, why:'Cada término ×2 + 1'},
+  {q:'Un artículo cuesta 80 €. Sube un 25 % y después baja un 20 %. ¿Cuál es el precio final?', o:['76 €','80 €','84 €','85 €'], a:1, why:'80 × 1,25 = 100; 100 × 0,80 = 80 €', text:true},
+],
+    VERB:[
+  {q:'PIE es a ZAPATO como MANO es a…', o:['dedo','guante','anillo','brazo'], a:1, why:'Parte del cuerpo → prenda que la cubre'},
+  {q:'¿Qué palabra no encaja?', o:['guitarra','violín','trompeta','arpa'], a:2, why:'La trompeta es de viento; el resto son de cuerda'},
+  {q:'PÁJARO es a NIDO como ABEJA es a…', o:['miel','colmena','flor','aguijón'], a:1, why:'Animal → lugar donde vive'},
+  {q:'Sinónimo de ESCUETO:', o:['escondido','breve','seco','tímido'], a:1, why:'Escueto = breve, sin adornos'},
+  {q:'¿Qué palabra no encaja?', o:['kilómetro','litro','metro','centímetro'], a:1, why:'El litro mide volumen; el resto, longitud'},
+  {q:'Pedro llega antes que Juan pero después que Ana. Marta llega después que Juan. ¿Quién llega en segundo lugar?', o:['Ana','Pedro','Juan','Marta'], a:1, why:'Orden: Ana, Pedro, Juan, Marta'},
+  {q:'Ningún pez es mamífero. Todos los delfines son mamíferos. Por tanto…', o:['Algunos delfines son peces','Ningún delfín es pez','Algunos peces son delfines','No se puede concluir nada'], a:1, why:'Si todos los delfines son mamíferos y ningún mamífero es pez, ningún delfín es pez'},
+  {q:'Antónimo de LOCUAZ:', o:['hablador','callado','tímido','sabio'], a:1, why:'Locuaz = que habla mucho'},
+],
+    DIG:[[5,8,2],[9,3,7,1],[2,6,4,9,3],[8,1,5,2,7,4],[4,7,1,9,3,6,2],[6,3,9,1,5,8,2,7]]
+  },
+  C:{
+    MATRICES:[
+  {d:1, f:(r,c)=>({shape:['triangle','hex','circle'][c],count:r+1,fill:'empty'})},
+  {d:1, f:(r,c)=>({shape:['triangle','square','circle'][r],count:2,fill:FILLS[c]})},
+  {d:2, f:(r,c)=>({shape:'arrow',count:1,fill:'solid',rot:(c*135+r*90)%360})},
+  {d:2, f:(r,c)=>({shape:['square','hex','triangle'][(r+c)%3],count:2,fill:FILLS[(2*r+c)%3]})},
+  {d:3, f:(r,c)=>{const t=[[2,1,3],[1,1,2],[1,2,3]];return {shape:'hex',count:t[r][c],fill:FILLS[r]};}},
+  {d:3, f:(r,c)=>({shape:'arrow',count:((r+c)%3)+1,fill:'stripe',rot:[90,0,315][r]})},
+  {d:4, f:(r,c)=>({shape:['circle','square','hex'][(r+2*c)%3],count:((2*r+c)%3)+1,fill:FILLS[r]})},
+  {d:4, f:(r,c)=>({shape:'arrow',count:((r+2*c)%3)+1,fill:FILLS[(r+c)%3],rot:[90,225,0][(2*r+c)%3]})},
+],
+    NUM:[
+  {q:'3, 6, 12, 24, ?', o:['36','42','48','52'], a:2, why:'Se multiplica por 2'},
+  {q:'64, 32, 16, 8, ?', o:['0','2','4','6'], a:2, why:'Se divide entre 2'},
+  {q:'2, 4, 3, 6, 5, ?', o:['7','8','10','12'], a:2, why:'Alterna ×2 y −1'},
+  {q:'3, 4, 7, 11, 18, ?', o:['25','27','29','30'], a:2, why:'Cada número es la suma de los dos anteriores'},
+  {q:'0, 1, 3, 7, 15, ?', o:['23','30','31','32'], a:2, why:'Cada término ×2 + 1'},
+  {q:'10, 8, 11, 7, 12, ?', o:['6','9','13','14'], a:0, why:'−2, +3, −4, +5, −6'},
+  {q:'1, 4, 10, 22, 46, ?', o:['88','92','94','96'], a:2, why:'Cada término ×2 + 2'},
+  {q:'5 máquinas fabrican 5 piezas en 5 minutos. ¿Cuánto tardan 100 máquinas en fabricar 100 piezas?', o:['1 min','5 min','20 min','100 min'], a:1, why:'Cada máquina hace 1 pieza en 5 minutos, da igual cuántas haya', text:true},
+],
+    VERB:[
+  {q:'ÁRBOL es a BOSQUE como ESTRELLA es a…', o:['cielo','luz','galaxia','noche'], a:2, why:'Elemento → conjunto formado por muchos de ellos'},
+  {q:'¿Qué palabra no encaja?', o:['lunes','marzo','viernes','domingo'], a:1, why:'Marzo es un mes; el resto, días'},
+  {q:'PINTOR es a PINCEL como ESCRITOR es a…', o:['libro','pluma','novela','lector'], a:1, why:'Profesional → herramienta con la que trabaja'},
+  {q:'Antónimo de ESCASO:', o:['poco','abundante','caro','raro'], a:1, why:'Escaso = poco; lo contrario es abundante'},
+  {q:'¿Qué animal no encaja?', o:['águila','murciélago','gorrión','búho'], a:1, why:'El murciélago es un mamífero; el resto, aves'},
+  {q:'Sinónimo de PERSPICAZ:', o:['torpe','agudo','desconfiado','persistente'], a:1, why:'Perspicaz = que capta las cosas con agudeza'},
+  {q:'Luis es mayor que Ana. Carmen es menor que Ana. Diego es mayor que Luis. ¿Quién es el segundo de más edad?', o:['Diego','Luis','Ana','Carmen'], a:1, why:'Orden: Diego > Luis > Ana > Carmen'},
+  {q:'Si llueve, el suelo se moja. El suelo está mojado. Por tanto…', o:['Ha llovido seguro','No ha llovido','No se puede asegurar que haya llovido','Lloverá pronto'], a:2, why:'El suelo puede mojarse por otras causas (falacia de afirmar el consecuente)'},
+],
+    DIG:[[3,9,6],[7,2,5,8],[1,8,4,6,2],[5,9,3,7,1,8],[2,6,9,4,7,3,8],[8,4,1,6,3,9,5,2]]
+  },
+};
+const FORM_NAMES={A:'Forma A',B:'Forma B',C:'Orión'};
+let MATRICES,NUM,VERB,DIG,ITEMS,FORM='A',PLAYER='';
+function setForm(f){FORM=f;({MATRICES,NUM,VERB,DIG}=FORMS[f]);ITEMS={matrix:MATRICES.map(buildMatrixItem),num:NUM.map((x,i)=>({...x,type:'mc',label:`Numérico ${i+1}`})),verb:VERB.map((x,i)=>({...x,type:'mc',label:`Verbal ${i+1}`}))};}
+/* ===================== Estado ===================== */
+const S = { step:'intro', answers:{matrix:[],num:[],verb:[],mem:[]}, speed:{ok:0,ko:0}, t0:0 };
+const SECTIONS = [
+  {id:'matrix', name:'Razonamiento abstracto', desc:'8 matrices: elige la figura que completa la cuadrícula.', why:'Inspirado en las matrices de razonamiento (razonamiento fluido, Gf).'},
+  {id:'num', name:'Razonamiento numérico', desc:'8 series y problemas: encuentra la regla.', why:'Similar a Aritmética / razonamiento cuantitativo.'},
+  {id:'verb', name:'Razonamiento verbal', desc:'8 preguntas de analogías, vocabulario y lógica.', why:'Similar al índice de Comprensión verbal (Gc).'},
+  {id:'mem', name:'Memoria de trabajo', desc:'Verás dígitos uno a uno; escríbelos en orden inverso.', why:'Basado en la tarea clásica de dígitos inversos.'},
+  {id:'speed', name:'Velocidad de procesamiento', desc:'45 segundos: ¿los dos grupos de símbolos son iguales?', why:'Similar a Búsqueda de símbolos.'},
+];
+let secIdx=0, itemIdx=0, sel=null;
+
+/* ===================== Pantallas ===================== */
+const LOCK_KEY='test_ci_orientativo_v1';
+function getLock(){ try{ return JSON.parse(localStorage.getItem(LOCK_KEY)||'null'); }catch(e){ return null; } }
+function setLock(o){ try{ localStorage.setItem(LOCK_KEY,JSON.stringify(o)); }catch(e){} }
+function lockedScreen(L){
+  if(L.status==='done'){
+    $app.innerHTML = `<h1>${L.name?esc(L.name)+', ya':'Ya'} hiciste este test</h1>
+    <div class="card"><p>Solo se permite <b>un intento</b>. Este fue tu resultado (${esc(L.formName)}):</p>
+      <div class="row" style="gap:24px;align-items:flex-end"><div class="big">${L.iq}</div><div><b>${esc(L.band)}</b><br><span class="muted">Percentil ≈ ${L.pc}</span></div></div>
+      <textarea readonly style="width:100%;min-height:150px;margin-top:16px;font:14px/1.5 Inter,sans-serif;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)">${esc(L.summary)}</textarea>
+      <div class="row" style="margin-top:10px"><a class="btn" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(L.challenge)}">Enviar por WhatsApp</a></div></div>`;
+  } else {
+    $app.innerHTML = `<h1>Intento ya usado</h1><div class="card"><p>Empezaste el test en este navegador y no lo terminaste. Solo se permite <b>un intento</b>, así que no se puede volver a empezar.</p></div>`;
+  }
+}
+function intro(){
+  const L=getLock(); if(L) return lockedScreen(L);
+  $app.innerHTML = `
+  <h1>Test de CI orientativo</h1>
+  <p class="muted">15–20 minutos · 5 secciones · 39 preguntas</p>
+  <div class="card">
+    <p>Este test imita la <b>estructura</b> de las baterías profesionales (como la escala Wechsler): mide varias capacidades por separado y las combina en una puntuación con <b>media 100 y desviación típica 15</b>.</p>
+    <div class="sections">${SECTIONS.map((s,i)=>`<div class="sec"><b>${i+1}. ${s.name}</b>${s.desc}</div>`).join('')}</div>
+    <p class="note"><b>Es un juego orientativo, no un test clínico.</b> No está baremado con una muestra real: la cifra final es una estimación ilustrativa, no tu CI de verdad.</p>
+    <form id="startf">
+      <label style="font-weight:600;display:block;margin:14px 0 6px">Tu nombre (para el resultado)</label>
+      <input id="pname" maxlength="30" placeholder="Ej.: Miguel" style="font:500 16px Inter,sans-serif;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);width:100%;max-width:320px">
+      <label style="font-weight:600;display:block;margin:16px 0 6px">Versión del test</label>
+      <div class="row" id="formsel">
+        <button type="button" class="opt sel" data-f="A">Forma A</button>
+        <button type="button" class="opt" data-f="B">Forma B</button>
+        <button type="button" class="opt" data-f="C">Orión</button>
+        <button type="button" class="opt" data-f="R">Al azar</button>
+      </div>
+      <p class="muted" style="font-size:13px">Las tres versiones tienen preguntas distintas y dificultad parecida.</p>
+      <p class="note"><b>Solo tienes un intento.</b> Cuando pulses Empezar, no podrás volver a empezar aunque recargues o cierres la página.</p>
+      <p class="muted" style="font-size:14px">Consejos: sin distracciones, sin calculadora (papel sí) y sin volver atrás.</p>
+      <button class="btn">Empezar</button>
+    </form>
+  </div>`;
+  let choice='A';
+  $app.querySelectorAll('#formsel .opt').forEach(b=>b.onclick=()=>{$app.querySelectorAll('#formsel .opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');choice=b.dataset.f;});
+  try{ const n=localStorage.getItem('ci_name'); if(n) document.getElementById('pname').value=n; }catch(e){}
+  document.getElementById('startf').onsubmit=e=>{
+    e.preventDefault();
+    PLAYER=document.getElementById('pname').value.trim().slice(0,30);
+    try{ localStorage.setItem('ci_name',PLAYER); }catch(e){}
+    setForm(choice==='R'?['A','B','C'][Math.floor(Math.random()*3)]:choice);
+    setLock({status:'started',name:PLAYER,form:FORM,t:Date.now()});
+    startSection(0);
+  };
+}
+function header(){
+  const totals={matrix:8,num:8,verb:8,mem:6,speed:1};
+  const done = SECTIONS.slice(0,secIdx).reduce((a,s)=>a+totals[s.id],0) + itemIdx;
+  const pct = Math.round(done/31*100);
+  return `<div class="top"><span>${FORM_NAMES[FORM]} · Sección ${secIdx+1} de 5 · ${SECTIONS[secIdx].name}</span><span>${pct}%</span></div><div class="progress"><div style="width:${pct}%"></div></div>`;
+}
+function startSection(i){
+  secIdx=i; itemIdx=0; sel=null; if(i===0) S.t0=Date.now();
+  const s=SECTIONS[i];
+  $app.innerHTML = header()+`<div class="card"><h2>${i+1}. ${s.name}</h2><p>${s.desc}</p><p class="muted" style="font-size:14px">${s.why}</p>
+  ${s.id==='mem'?'<p>Ejemplo: si ves <b>3 · 8 · 1</b>, escribe <b>183</b>.</p>':''}
+  ${s.id==='speed'?'<p>Pulsa <b>Igual</b> o <b>Distinto</b> lo más rápido que puedas sin fallar. En teclado: <kbd>F</kbd> = igual, <kbd>J</kbd> = distinto. Los errores restan.</p>':''}
+  <button class="btn" onclick="runSection()">Comenzar sección</button></div>`;
+}
+function runSection(){
+  const id=SECTIONS[secIdx].id;
+  if(id==='mem') return memItem();
+  if(id==='speed') return speedTask();
+  showItem();
+}
+function showItem(){
+  const id=SECTIONS[secIdx].id; const it=ITEMS[id][itemIdx]; sel=null;
+  let body='';
+  if(it.type==='matrix'){
+    body = `<p>¿Qué figura completa la cuadrícula?</p><div class="grid3">${it.grid.map((c,i)=>i===8?'<div class="q">?</div>':`<div>${cellSVG(c,72)}</div>`).join('')}</div>
+    <div class="opts">${it.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${'ABCDEF'[i]}</span>${cellSVG(o,58)}</button>`).join('')}</div>`;
+  } else {
+    body = it.text||id==='verb' ? `<p style="font-size:1.12rem;font-weight:500">${esc(it.q)}</p>` : `<p>¿Qué número sigue?</p><div class="series">${esc(it.q)}</div>`;
+    body += `<div class="opts txt">${it.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${'ABCD'[i]}</span>${esc(o)}</button>`).join('')}</div>`;
+  }
+  $app.innerHTML = header()+`<div class="card"><h3>${it.label} <span class="muted" style="font-size:14px">(${itemIdx+1}/${ITEMS[id].length})</span></h3>${body}
+  <div class="row" style="margin-top:18px;justify-content:flex-end"><button class="btn" id="next" disabled>Siguiente</button></div></div>`;
+  $app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ $app.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); sel=+b.dataset.i; document.getElementById('next').disabled=false; });
+  document.getElementById('next').onclick=()=>{
+    const correct = it.type==='matrix'?it.correct:it.a;
+    S.answers[id][itemIdx]=sel===correct;
+    itemIdx++;
+    if(itemIdx<ITEMS[id].length) showItem(); else startSection(secIdx+1);
+  };
+}
+/* ---- memoria ---- */
+function memItem(){
+  const seq=DIG[itemIdx];
+  $app.innerHTML = header()+`<div class="card"><h3>Dígitos inversos <span class="muted" style="font-size:14px">(${itemIdx+1}/6 · ${seq.length} dígitos)</span></h3><p class="muted">Memoriza…</p><div class="digit" id="dg"></div></div>`;
+  const dg=document.getElementById('dg'); let k=0;
+  const tick=()=>{
+    if(k<seq.length){ dg.textContent=seq[k]; setTimeout(()=>{dg.textContent=''; k++; setTimeout(tick,250);},800); }
+    else askMem(seq);
+  };
+  setTimeout(tick,600);
+}
+function askMem(seq){
+  $app.innerHTML = header()+`<div class="card"><h3>Escríbelos en orden inverso</h3><p class="muted">Solo números, sin espacios.</p>
+  <form id="f" class="row"><input class="ans" id="in" inputmode="numeric" autocomplete="off" autofocus><button class="btn">Confirmar</button></form></div>`;
+  const inp=document.getElementById('in'); inp.focus();
+  document.getElementById('f').onsubmit=e=>{
+    e.preventDefault();
+    const v=inp.value.replace(/\D/g,'');
+    S.answers.mem[itemIdx] = v===seq.slice().reverse().join('');
+    itemIdx++;
+    if(itemIdx<DIG.length) memItem(); else startSection(4);
+  };
+}
+/* ---- velocidad ---- */
+const SYM=['◆','◇','○','●','△','▲','□','■','☆','★','◐','◑'];
+let spd=null;
+function newPair(){
+  const a=[]; for(let i=0;i<4;i++) a.push(SYM[Math.floor(Math.random()*SYM.length)]);
+  const b=a.slice(); const same=Math.random()<.5;
+  if(!same){ const p=Math.floor(Math.random()*4); let n; do{n=SYM[Math.floor(Math.random()*SYM.length)];}while(n===b[p]); b[p]=n; }
+  return {a,b,same};
+}
+function speedTask(){
+  S.speed={ok:0,ko:0}; let left=45; let pair=newPair();
+  const render=()=>{
+    $app.innerHTML = header()+`<div class="card"><div class="row" style="justify-content:space-between"><h3 style="margin:0">¿Iguales?</h3><span class="timer" id="tm">${left}s</span></div>
+    <div class="sym"><span>${pair.a.join('')}</span><span class="muted">|</span><span>${pair.b.join('')}</span></div>
+    <div class="row" style="justify-content:center"><button class="btn" id="eq">Igual (F)</button><button class="btn ghost" id="df">Distinto (J)</button></div>
+    <p class="muted" style="text-align:center;font-size:13px;margin-top:14px">Aciertos: ${S.speed.ok} · Errores: ${S.speed.ko}</p></div>`;
+    document.getElementById('eq').onclick=()=>answer(true);
+    document.getElementById('df').onclick=()=>answer(false);
+  };
+  const answer=v=>{ if(v===pair.same) S.speed.ok++; else S.speed.ko++; pair=newPair(); render(); };
+  const onKey=e=>{ const k=e.key.toLowerCase(); if(k==='f') answer(true); if(k==='j') answer(false); };
+  window.addEventListener('keydown',onKey);
+  render();
+  const iv=setInterval(()=>{ left--; const t=document.getElementById('tm'); if(t) t.textContent=left+'s';
+    if(left<=0){ clearInterval(iv); window.removeEventListener('keydown',onKey); results(); } },1000);
+}
+
+/* ===================== Resultados ===================== */
+function erf(x){const t=1/(1+.3275911*Math.abs(x));const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x);return x>=0?y:-y;}
+const pctile = iq => 50*(1+erf((iq-100)/15/Math.SQRT2));
+/* Baremo HIPOTÉTICO: supone que la población media acierta el 55 % con DT del 20 %. */
+const toIndex = (p,sd=.2) => Math.max(55,Math.min(145,Math.round(100+15*(p-.55)/sd)));
+function band(iq){
+  if(iq>=130) return 'Muy superior'; if(iq>=120) return 'Superior'; if(iq>=110) return 'Medio-alto';
+  if(iq>=90) return 'Medio'; if(iq>=80) return 'Medio-bajo'; if(iq>=70) return 'Límite'; return 'Muy bajo';
+}
+function curveSVG(iq){
+  const W=600,H=170,pts=[];
+  for(let x=40;x<=160;x+=1){const z=(x-100)/15;pts.push([(x-40)/120*W, H-20-Math.exp(-z*z/2)*(H-40)]);}
+  const mx=(Math.max(40,Math.min(160,iq))-40)/120*W;
+  const ticks=[55,70,85,100,115,130,145].map(t=>{const x=(t-40)/120*W;return `<line x1="${x}" x2="${x}" y1="${H-20}" y2="${H-15}" stroke="currentColor"/><text x="${x}" y="${H-2}" font-size="12" text-anchor="middle" fill="currentColor">${t}</text>`;}).join('');
+  const shade = pts.filter(p=>p[0]>=(85-40)/120*W && p[0]<=(115-40)/120*W);
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="color:var(--muted)">
+    <polygon points="${(85-40)/120*W},${H-20} ${shade.map(p=>p.join(',')).join(' ')} ${(115-40)/120*W},${H-20}" fill="var(--accent-soft)"/>
+    <polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--ink)" stroke-width="2"/>
+    <line x1="0" x2="${W}" y1="${H-20}" y2="${H-20}" stroke="currentColor"/>${ticks}
+    <line x1="${mx}" x2="${mx}" y1="14" y2="${H-20}" stroke="var(--accent)" stroke-width="3"/>
+    <text x="${mx}" y="11" font-size="13" font-weight="700" text-anchor="middle" fill="var(--accent)">Tú</text>
+    <text x="${(100-40)/120*W}" y="${H-60}" font-size="11" text-anchor="middle" fill="currentColor">68 % de la gente (85–115)</text></svg>`;
+}
+function results(){
+  const mins=Math.round((Date.now()-S.t0)/60000);
+  const sum=a=>a.filter(Boolean).length;
+  const net=Math.max(0,S.speed.ok-S.speed.ko);
+  const areas=[
+    {n:'Razonamiento abstracto',raw:sum(S.answers.matrix),max:8},
+    {n:'Razonamiento numérico',raw:sum(S.answers.num),max:8},
+    {n:'Razonamiento verbal',raw:sum(S.answers.verb),max:8},
+    {n:'Memoria de trabajo',raw:sum(S.answers.mem),max:6},
+    {n:'Velocidad de procesamiento',raw:net,max:30,extra:` (${S.speed.ok} aciertos − ${S.speed.ko} errores)`},
+  ];
+  areas.forEach(a=>{a.p=Math.min(1,a.raw/a.max);a.idx=toIndex(a.p);});
+  const comp = areas.reduce((s,a)=>s+a.p,0)/areas.length;
+  const iq = toIndex(comp,.16);
+  const pc = pctile(iq);
+  const rows=[['130 o más','Muy superior','≈2 %'],['120–129','Superior','≈7 %'],['110–119','Medio-alto','≈16 %'],['90–109','Medio','≈50 %'],['80–89','Medio-bajo','≈16 %'],['70–79','Límite','≈7 %'],['Menos de 70','Muy bajo','≈2 %']];
+  const best=areas.slice().sort((a,b)=>b.p-a.p)[0], worst=areas.slice().sort((a,b)=>a.p-b.p)[0];
+  const fails = [...ITEMS.matrix.map((it,i)=>[it.label,S.answers.matrix[i]]),...ITEMS.num.map((it,i)=>[it.label,S.answers.num[i]]),...ITEMS.verb.map((it,i)=>[it.label,S.answers.verb[i]])].filter(x=>!x[1]).map(x=>x[0]);
+  const memFail = DIG.map((d,i)=>S.answers.mem[i]?null:d.length+' dígitos').filter(Boolean);
+  const summary = `RESULTADOS TEST DE CI · ${FORM_NAMES[FORM].toUpperCase()}${PLAYER?' · '+PLAYER:''}\nEstimación ilustrativa: ${iq} (${band(iq)}, percentil ≈ ${Math.round(pc)})\nTiempo total: ${mins} min\n\n`+areas.map(a=>`- ${a.n}: ${a.raw}/${a.max}${a.extra||''} → índice ≈ ${a.idx}`).join('\n')+`\n\nFallos: ${fails.length?fails.join(', '):'ninguno'}\nDígitos inversos fallados: ${memFail.length?memFail.join(', '):'ninguno'}`;
+  const review = [...ITEMS.num.map((it,i)=>({it,ok:S.answers.num[i]})),...ITEMS.verb.map((it,i)=>({it,ok:S.answers.verb[i]}))];
+  $app.innerHTML = `<h1>${PLAYER?esc(PLAYER)+', estos son tus resultados':'Tus resultados'}</h1>
+  <div class="card">
+    <div class="row" style="gap:24px;align-items:flex-end">
+      <div><div class="muted" style="font-size:13px">Estimación ilustrativa</div><div class="big">${iq}</div></div>
+      <div><b>${band(iq)}</b><br><span class="muted">Percentil ≈ ${pc<1?'<1':pc>99?'>99':Math.round(pc)} · ${mins} min</span></div>
+    </div>
+    ${curveSVG(iq)}
+    <p class="note">Esta cifra sale de un <b>baremo hipotético</b> (suponiendo que una persona media acierta ~55 %), no de una muestra real. Sirve para ver cómo se transforma una puntuación bruta en la escala de CI, pero puede desviarse muchos puntos de tu CI real.</p>
+  </div>
+  <div class="card"><h2>Perfil por áreas</h2>
+    <div class="bars">${areas.map(a=>`<div class="b"><div class="lab"><span>${a.n}</span><span>${a.raw}/${a.max}${a.extra||''} · índice ≈ ${a.idx}</span></div><div class="t"><div style="width:${Math.round(a.p*100)}%"></div></div></div>`).join('')}</div>
+    <p style="margin-top:14px">Tu punto más fuerte ha sido <b>${best.n.toLowerCase()}</b> y el más flojo <b>${worst.n.toLowerCase()}</b>. En la evaluación profesional, las diferencias entre índices suelen decir más que el número global.</p>
+  </div>
+  <div class="card"><h2>Cómo se interpreta la escala</h2>
+    <table><tr><th>CI</th><th>Clasificación orientativa</th><th>Población</th></tr>
+    ${rows.map(r=>`<tr class="${r[1]===band(iq)?'me':''}"><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</table>
+    <p class="muted" style="font-size:13px;margin-top:8px">Las etiquetas cambian según el manual (WAIS, Stanford-Binet…).</p>
+  </div>
+  <div class="card review"><h2>Repaso: numérico y verbal</h2><ul>
+    ${review.map(r=>`<li><span class="${r.ok?'ok':'ko'}">${r.ok?'✓':'✗'}</span> <b>${esc(r.it.q)}</b> → ${esc(r.it.o[r.it.a])}. <span class="muted">${esc(r.it.why)}</span></li>`).join('')}</ul></div>
+  <div class="card"><h3>Reta a tus amigos</h3>
+    <p class="muted" style="font-size:14px">Envía tu resultado y pásales este mismo archivo para que lo intenten.</p>
+    <div class="row" style="margin-bottom:14px"><a class="btn" id="wa" target="_blank" rel="noopener" style="text-decoration:none">Enviar por WhatsApp</a><button class="btn ghost" id="cpc">Copiar reto</button><span id="cpcmsg" class="muted" style="font-size:14px"></span></div>
+    <h3 style="margin-top:8px">Resumen detallado</h3><p class="muted" style="font-size:14px">Útil para guardarlo o pegarlo donde quieras.</p>
+    <textarea id="sumtxt" readonly style="width:100%;min-height:150px;font:14px/1.5 Inter,sans-serif;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)">${esc(summary)}</textarea>
+    <div class="row" style="margin-top:10px"><button class="btn" id="cp">Copiar resumen</button><span id="cpmsg" class="muted" style="font-size:14px"></span></div></div>
+
+  <p class="muted" style="font-size:13px;margin-top:18px">Solo se permite un intento: repetir inflaría el resultado (efecto práctica), igual que en los tests profesionales.</p>`;
+  window.scrollTo(0,0);
+  const link = '';
+  const challenge = `🧠 ${PLAYER||'He'} ${PLAYER?'ha sacado':'sacado'} ${iq} en el Test de CI orientativo (${FORM_NAMES[FORM]}, percentil ≈ ${Math.round(pc)}).\nMejor área: ${best.n.toLowerCase()}. ¿Me superas?${link?'\n'+link:''}`;
+  setLock({status:'done',name:PLAYER,form:FORM,formName:FORM_NAMES[FORM],iq,band:band(iq),pc:Math.round(pc),summary,challenge});
+  document.getElementById('wa').href='https://wa.me/?text='+encodeURIComponent(challenge);
+  document.getElementById('cpc').onclick=async()=>{ const m=document.getElementById('cpcmsg'); try{ await navigator.clipboard.writeText(challenge); m.textContent='¡Copiado!'; }catch(e){ m.textContent=challenge; } };
+  document.getElementById('cp').onclick=async()=>{
+    const m=document.getElementById('cpmsg');
+    try{ await navigator.clipboard.writeText(summary); m.textContent='¡Copiado!'; }
+    catch(e){ const t=document.getElementById('sumtxt'); t.focus(); t.select(); m.textContent='Selecciona el texto y cópialo con Ctrl+C'; }
+  };
+}
+intro();
+window.addEventListener('beforeunload',e=>{ const L=getLock(); if(L&&L.status==='started'){ e.preventDefault(); e.returnValue=''; } });
+</script>
+</body>
+</html>
